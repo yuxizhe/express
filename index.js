@@ -43,7 +43,7 @@ app.listen(app.get('port'), function() {
 
 blogs = getXML();
 // blogs = getXML();
-setTimeout(function() { blogs = getXML() }, 5000);
+setTimeout(function() { blogs = getXML(), console.log(blogs) }, 10000);
 setInterval(function() {
     blogs = getXML();
     console.log(blogs)
@@ -53,7 +53,7 @@ function food() {
     request('http://apis.baidu.com/tngou/cook/list').then(
         function(result) {
             cooks = result.tngou;
-            console.log(result)
+            //console.log(result)
         },
         function(err) {
             console.log(err);
