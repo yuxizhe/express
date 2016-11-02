@@ -1,0 +1,14 @@
+extends ../layout
+
+block content
+	.container
+		.row
+			each item in movies
+				.col-md-3
+					.thumbnail
+						a(href="")
+						img.img-responsive#img400(src="#{item.img}")
+					.caption
+						h5 #{item.title}
+						p: a(href="#{item.magnet}").btn.btn-primary  magnet
+						
