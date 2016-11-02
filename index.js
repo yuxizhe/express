@@ -34,8 +34,8 @@ app.listen(app.get('port'), function() {
 
 blogs = getXML();
 // blogs = getXML();
-
+setTimeout(function() { blogs = getXML() }, 5000);
 setInterval(function() {
     blogs = getXML();
     console.log(blogs)
-}, 100000)
+}, 500000)
