@@ -1,16 +1,25 @@
 var express = require('express');
 var app = express();
 var getXML = require('./getXML');
+var request = require('./request');
 
 var blogs = [];
+var cooks = [];
 
 app.set('port', process.env.PORT || 3000);
 app.set('view engine', 'jade');
 
-app.get('/movie', function(req, res) {
+app.get('/', function(req, res) {
     res.render("pages/index", {
         title: "电影",
         movies: blogs
+    })
+})
+
+app.get('/cook', function(req, res) {
+    res.render("pages/cook", {
+        title: "菜谱",
+        cooks: cooks
     })
 })
 
@@ -38,4 +47,17 @@ setTimeout(function() { blogs = getXML() }, 5000);
 setInterval(function() {
     blogs = getXML();
     console.log(blogs)
-}, 500000)
+}, 500000);
+
+function food() {
+    request('http://apis.baidu.com/tngou/cook/list').then(
+        function(result) {
+            cooks = result.tngou;
+            console.log(result)
+        },
+        function(err) {
+            console.log(err);
+        })
+}
+food();
+setInterval(food, 1000000);

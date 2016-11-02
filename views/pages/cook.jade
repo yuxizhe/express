@@ -1,0 +1,10 @@
+extends ../layout
+
+block content
+	.container
+		.row
+			each item in cooks
+				.col-md-3
+					.thumbnail
+						img(src="http://tnfs.tngou.net/image#{item.img}")
+					h5 #{item.name}
