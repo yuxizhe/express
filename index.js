@@ -4,6 +4,8 @@ var getXML = require('./getXML');
 var request = require('./request');
 var mongoose = require('mongoose');
 var Vacation = require('./models/vacation.js');
+var Movie = require('./models/movie.js');
+var bodyParser = require('body-parser');
 
 var opts = {
     server: {
@@ -17,8 +19,17 @@ mongoose.connect(connectString, opts);
 var blogs = [];
 var cooks = [];
 
+
 app.set('port', process.env.PORT || 3000);
 app.set('view engine', 'jade');
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
+    // 跨域
+app.use('/api', require('cors')());
 
 app.get('/', function(req, res) {
     res.render("pages/index", {
@@ -65,6 +76,34 @@ app.get('/api', function(req, res) {
         }));
     });
 });
+
+app.post('/api/movies', function(req, res) {
+    //res.json(req.body);
+    var a = new Movie({
+        name: req.body.name,
+        img: req.body.img,
+        magnet: req.body.magnet
+    });
+    a.save(function(err, a) {
+        if (err) return res.send(500, 'Error occurred: database error.');
+        res.json({ id: a._id });
+    })
+
+})
+
+app.get('/api/movies', function(req, res) {
+    Movie.find(function(err, attractions) {
+        if (err) return res.send(500, 'Error occurred: database error.');
+        res.json(attractions.map(function(vacation) {
+            return {
+                name: vacation.name,
+                img: vacation.img,
+                magnet: vacation.magnet,
+            }
+        }));
+    });
+});
+
 //定制404页面 
 app.use(function(req, res) {
     res.type('text/plain');
