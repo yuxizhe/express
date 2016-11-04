@@ -7,15 +7,57 @@
     <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
     <script src="http://cdn.bootcss.com/backbone.js/1.3.3/backbone-min.js"></script>
 </head>
+<div id="todo">
+    <input type='text'></input>
+    <input type="button" value="sub"></input>
+</div>
 
 <body>
 </body>
 <script>
 window.onload = function() {
     // body...
+    var View = Backbone.View.extend({
+
+        el: '#todo',
+
+        // bind to DOM event using events property
+        events: {
+            'click [type="button"]': 'clicked',
+        },
+
+        initialize: function() {
+            // bind to DOM event using jQuery
+            this.$el.click(this.jqueryClicked);
+
+            // bind to API event
+            this.on('apiEvent', this.callback);
+        },
+
+        // 'this' is view
+        clicked: function(event) {
+            console.log("events handler for " + this.el.outerHTML);
+            console.log(event);
+            this.trigger('apiEvent', event.target);
+        },
+
+        // 'this' is handling DOM element
+        jqueryClicked: function(event) {
+            console.log("jQuery handler for " + this.outerHTML);
+        },
+
+        callback: function(eventType) {
+            console.log("event type was " + eventType.previousElementSibling.value);
+        }
+
+    });
+
+    var view = new View();
+
+    //  Model 
 
     var MovieModel = Backbone.Model.extend({
-        urlRoot: 'http://localhost:3000/api/movies',
+        // urlRoot: 'http://localhost:3000/api/movies',
         defaults: {
             name: 'name1',
             img: 'img1',
@@ -24,13 +66,34 @@ window.onload = function() {
     })
     var movie = new MovieModel();
 
-    movie.save({
-        name: 'backbone'
-    }, {
-        success: function(movie) {
-            alert(movie.toJSON());
-        }
+    //  Collection 
+
+    var MovieCollection = Backbone.Collection.extend({
+        url: 'http://localhost:3000/api/movies',
+        model: MovieModel
     })
+
+    var movies = new MovieCollection();
+
+    movies.fetch({
+        success: function() {
+            console.log(movies)
+        }
+    });
+
+    // movie.save({
+    //     name: 'backbone'
+    // }, {
+    //     success: function(movie) {
+    //         alert(movie.toJSON());
+    //     }
+    // });
+    // movie.fetch({
+    //     success: function(movie) {
+    //         console.log(movie)
+    //     }
+    // })
+
 }
 </script>
 
