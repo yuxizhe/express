@@ -13,6 +13,4 @@ module.exports = function request(url) {
             resolve(JSON.parse(xhr.responseText))
         })
     })
-
-
 }
